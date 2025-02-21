@@ -58,15 +58,8 @@ function(get_patch_version)
             OUTPUT_STRIP_TRAILING_WHITESPACE
         )
 
-        if(exit_code EQUAL 0)
-            set(GET_PATCH_VERSION_CMD ${GIT_EXECUTABLE} rev-list HEAD...${LAST_TAG} --count)
-        else()
-            set(GET_PATCH_VERSION_CMD ${GIT_EXECUTABLE} rev-list HEAD --count)
-        endif()
-
-
         execute_process(COMMAND
-            ${GET_PATCH_VERSION_CMD}
+            "${GIT_EXECUTABLE}" rev-list HEAD...${LAST_TAG} --count
             WORKING_DIRECTORY "${WORK_DIR}"
             OUTPUT_VARIABLE NUMBER_PATCH
             RESULT_VARIABLE exit_code
@@ -93,8 +86,6 @@ if(Git_FOUND)
     get_patch_version()
 
 else()
-
-    message(WARNING "Git not found, it is impossible to get the hash and patch version (they will be set to zero)")
 
     if(${DAEMON_PATCH_VERSION} STREQUAL patch)
         set(DAEMON_PATCH_VERSION 0)
